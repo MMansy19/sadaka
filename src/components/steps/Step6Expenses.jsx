@@ -1,6 +1,6 @@
 import React from 'react';
-import { Input } from '../Input';
-import { formatCurrency, calculateNetBalance } from '../../utils/calculations';
+import { Input } from '../ui';
+import { formatCurrency } from '../../utils';
 
 export const Step6Expenses = ({ data, updateNestedField }) => {
   const expenses = data.expenses || {};
@@ -22,7 +22,7 @@ export const Step6Expenses = ({ data, updateNestedField }) => {
   ];
 
   const income = data.income || {};
-  const netBalance = calculateNetBalance(income.totalIncome || 0, expenses.totalExpenses || 0);
+  const netBalance = (income.totalIncome || 0) - (expenses.totalExpenses || 0);
   const balanceClass = netBalance >= 0 ? 'positive' : 'negative';
 
   return (

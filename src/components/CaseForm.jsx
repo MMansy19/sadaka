@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCaseForm } from '../hooks/useCaseForm';
-import { ProgressBar } from './ProgressBar';
+import { ProgressBar, Button, Card, CardBody } from './ui';
 import { Step1BasicInfo } from './steps/Step1BasicInfo';
 import { Step2FamilyMembers } from './steps/Step2FamilyMembers';
 import { Step3PreviousMarriage } from './steps/Step3PreviousMarriage';
@@ -12,6 +12,7 @@ import { Step8Housing } from './steps/Step8Housing';
 import { Step9Appliances } from './steps/Step9Appliances';
 import { Step10Evaluation } from './steps/Step10Evaluation';
 import { Step11Review } from './steps/Step11Review';
+import { CasePrint } from './CasePrint';
 
 const steps = [
   { title: 'البيانات الأساسية', component: Step1BasicInfo },
@@ -27,18 +28,21 @@ const steps = [
   { title: 'المراجعة', component: Step11Review }
 ];
 
-export const CaseForm = () => {
+export const CaseForm = ({ initialData = null }) => {
   const {
     formData,
     setFormData,
     currentStep,
     isSaving,
     lastSaved,
+    isViewingCase,
     nextStep,
     prevStep,
     goToStep,
     resetForm
-  } = useCaseForm();
+  } = useCaseForm(initialData);
+
+  const [showPrint, setShowPrint] = useState(false);
 
   const CurrentStepComponent = steps[currentStep].component;
 
@@ -161,26 +165,32 @@ export const CaseForm = () => {
       />
 
       <div className="form-content">
-        <CurrentStepComponent
-          data={formData}
-          updateField={updateField}
-          updateNestedField={updateNestedField}
-          updateArrayItem={updateArrayItem}
-          addArrayItem={addArrayItem}
-          removeArrayItem={removeArrayItem}
-        />
+        <Card>
+          <CardBody>
+            <CurrentStepComponent
+              data={formData}
+              updateField={updateField}
+              updateNestedField={updateNestedField}
+              updateArrayItem={updateArrayItem}
+              addArrayItem={addArrayItem}
+              removeArrayItem={removeArrayItem}
+            />
+          </CardBody>
+        </Card>
       </div>
 
       <div className="form-actions">
         <div className="actions-left">
-          {currentStep > 0 && (
-            <button className="btn btn-secondary" onClick={prevStep}>
+          {currentStep > 0 && !isViewingCase && (
+            <Button variant="secondary" onClick={prevStep}>
               السابق
-            </button>
+            </Button>
           )}
-          <button className="btn btn-outline" onClick={clearAllAndReset}>
-            حالة جديدة
-          </button>
+          {!isViewingCase && (
+            <Button variant="outline" onClick={clearAllAndReset}>
+              حالة جديدة
+            </Button>
+          )}
         </div>
 
         <div className="actions-center">
@@ -194,20 +204,37 @@ export const CaseForm = () => {
         </div>
 
         <div className="actions-right">
-          {currentStep < steps.length - 1 ? (
-            <button className="btn btn-primary" onClick={nextStep}>
-              التالي
-            </button>
-          ) : (
-            <button className="btn btn-success" onClick={handleSubmit}>
-              إرسال الحالة
-            </button>
+          {currentStep === steps.length - 1 && (
+            <Button variant="outline" onClick={() => setShowPrint(true)}>
+              طباعة
+            </Button>
+          )}
+          {!isViewingCase && (
+            <>
+              {currentStep < steps.length - 1 ? (
+                <Button variant="primary" onClick={nextStep}>
+                  التالي
+                </Button>
+              ) : (
+                <Button variant="success" onClick={handleSubmit}>
+                  إرسال الحالة
+                </Button>
+              )}
+            </>
           )}
         </div>
       </div>
 
+      {showPrint && (
+        <CasePrint data={formData} onClose={() => setShowPrint(false)} />
+      )}
+
       <footer className="form-footer">
-        <p>جميع البيانات محفوظة تلقائياً | {String(formData.basicInfo?.fullName || 'حالة جديدة')}</p>
+        <p>
+          {isViewingCase
+            ? `عرض حالة: ${String(formData.basicInfo?.fullName || '')}`
+            : `جميع البيانات محفوظة تلقائياً | ${String(formData.basicInfo?.fullName || 'حالة جديدة')}`}
+        </p>
       </footer>
     </div>
   );

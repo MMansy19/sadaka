@@ -1,4 +1,5 @@
-import { Input } from '../Input';
+import React from 'react';
+import { Input, Button } from '../ui';
 
 export const Step4Debts = ({ data, updateField, addArrayItem, removeArrayItem }) => {
   const debts = data.debts || {};
@@ -51,9 +52,9 @@ export const Step4Debts = ({ data, updateField, addArrayItem, removeArrayItem })
         <div className="conditional-section">
           <div className="step-header-inline">
             <h3>قائمة الديون</h3>
-            <button type="button" className="btn btn-primary btn-sm" onClick={addDebt}>
+            <Button variant="primary" size="sm" onClick={addDebt}>
               + إضافة دين
-            </button>
+            </Button>
           </div>
 
           {(!debts.debts || debts.debts.length === 0) ? (
@@ -66,16 +67,16 @@ export const Step4Debts = ({ data, updateField, addArrayItem, removeArrayItem })
                 <div key={debt.id} className="debt-card">
                   <div className="debt-header">
                     <h4>دين #{index + 1}</h4>
-                    <button
-                      type="button"
-                      className="btn btn-danger btn-sm"
+                    <Button
+                      variant="danger"
+                      size="sm"
                       onClick={() => {
                         const newDebts = debts.debts.filter(d => d.id !== debt.id);
                         updateFieldDirect('debts', newDebts);
                       }}
                     >
                       حذف
-                    </button>
+                    </Button>
                   </div>
                   <div className="form-grid">
                     <Input

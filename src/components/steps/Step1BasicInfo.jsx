@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from '../Input';
+import { Input } from '../ui';
 
 export const Step1BasicInfo = ({ data, updateField, errors }) => {
   const basicInfo = data.basicInfo || {};

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from '../Input';
+import { Input, Button } from '../ui';
 
 export const Step2FamilyMembers = ({ data, updateArrayItem, addArrayItem, removeArrayItem }) => {
   const familyMembers = data.familyMembers || [];
@@ -40,9 +40,9 @@ export const Step2FamilyMembers = ({ data, updateArrayItem, addArrayItem, remove
     <div className="step-container">
       <div className="step-header-inline">
         <h2>أفراد الأسرة</h2>
-        <button type="button" className="btn btn-primary" onClick={addMember}>
+        <Button variant="primary" onClick={addMember}>
           + إضافة فرد
-        </button>
+        </Button>
       </div>
 
       {familyMembers.length === 0 ? (
@@ -55,13 +55,13 @@ export const Step2FamilyMembers = ({ data, updateArrayItem, addArrayItem, remove
             <div key={member.id} className="member-card">
               <div className="member-header">
                 <h4>فرد</h4>
-                <button
-                  type="button"
-                  className="btn btn-danger btn-sm"
+                <Button
+                  variant="danger"
+                  size="sm"
                   onClick={() => removeArrayItem('familyMembers', member.id)}
                 >
                   حذف
-                </button>
+                </Button>
               </div>
               <div className="form-grid">
                 <Input
