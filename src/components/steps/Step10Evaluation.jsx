@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from '../Input';
+import { Input } from '../ui';
 
 export const Step10Evaluation = ({ data, updateField }) => {
   const evaluation = data.evaluation || {};
