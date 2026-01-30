@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from '../Input';
+import { Input } from '../ui';
 
 export const Step3PreviousMarriage = ({ data, updateField }) => {
   const previousMarriage = data.previousMarriage || {};

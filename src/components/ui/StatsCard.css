@@ -1,0 +1,106 @@
+.ui-stats-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.ui-stats-card--clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ui-stats-card--clickable:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.ui-stats-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  color: var(--primary-color, #2563eb);
+}
+
+.ui-stats-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ui-stats-card__title {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #64748b);
+  font-weight: 500;
+}
+
+.ui-stats-card__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary, #1e293b);
+}
+
+.ui-stats-card__trend {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.ui-stats-card__trend--up {
+  color: var(--success-color, #16a34a);
+}
+
+.ui-stats-card__trend--down {
+  color: var(--danger-color, #dc2626);
+}
+
+.ui-stats-card__trend--neutral {
+  color: var(--text-muted, #94a3b8);
+}
+
+/* Variants */
+.ui-stats-card--primary .ui-stats-card__icon {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1d4ed8;
+}
+
+.ui-stats-card--success .ui-stats-card__icon {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  color: #166534;
+}
+
+.ui-stats-card--warning .ui-stats-card__icon {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+}
+
+.ui-stats-card--danger .ui-stats-card__icon {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .ui-stats-card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .ui-stats-card__icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .ui-stats-card__value {
+    font-size: 1.25rem;
+  }
+}

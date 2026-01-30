@@ -1,5 +1,5 @@
 node_modules
-.env
 docs
 dist
 dist
+config.bat

@@ -50,15 +50,21 @@ const sanitizeData = (data) => {
   return sanitized;
 };
 
-export const useCaseForm = (caseId = null) => {
-  const [formData, setFormData] = useState(() => getEmptyCase());
-  const [currentStep, setCurrentStep] = useState(0);
+export const useCaseForm = (initialData = null) => {
+  const [formData, setFormData] = useState(() => initialData ? sanitizeData(initialData) : getEmptyCase());
+  const [currentStep, setCurrentStep] = useState(initialData ? 10 : 0); // Go to review step for existing cases
   const [errors, setErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
+  const [isViewingCase, setIsViewingCase] = useState(!!initialData);
 
-  // Load draft from localStorage on mount
+  // Load draft from localStorage on mount (only if not viewing existing case)
   useEffect(() => {
+    if (initialData) {
+      setIsViewingCase(true);
+      return; // Skip loading draft when viewing existing case
+    }
+
     const savedDraft = localStorage.getItem(STORAGE_KEY);
     if (savedDraft) {
       try {
@@ -73,7 +79,7 @@ export const useCaseForm = (caseId = null) => {
         localStorage.removeItem(STORAGE_KEY);
       }
     }
-  }, []);
+  }, [initialData]);
 
   // Auto-save to localStorage
   const saveDraft = useCallback(async () => {
@@ -210,6 +216,7 @@ export const useCaseForm = (caseId = null) => {
     setErrors,
     isSaving,
     lastSaved,
+    isViewingCase,
     updateField,
     updateNestedField,
     updateArrayItem,
