@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatCurrency } from '../../utils/calculations';
+import { formatCurrency } from '../../utils';
 
 export const Step11Review = ({ data }) => {
   // Safely extract values with fallbacks

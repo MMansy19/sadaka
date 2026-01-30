@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from '../Input';
+import { Input, Button } from '../ui';
 
 export const Step9Appliances = ({ data, updateField, addArrayItem, removeArrayItem }) => {
   const appliances = data.appliances || {};
@@ -76,9 +76,9 @@ export const Step9Appliances = ({ data, updateField, addArrayItem, removeArrayIt
       <div className="furniture-section">
         <div className="step-header-inline">
           <h4>الأثاث</h4>
-          <button type="button" className="btn btn-primary btn-sm" onClick={addFurniture}>
+          <Button variant="primary" size="sm" onClick={addFurniture}>
             + إضافة أثاث
-          </button>
+          </Button>
         </div>
 
         {(!appliances.furniture || appliances.furniture.length === 0) ? (
@@ -114,16 +114,16 @@ export const Step9Appliances = ({ data, updateField, addArrayItem, removeArrayIt
                     type="number"
                     min={1}
                   />
-                  <button
-                    type="button"
-                    className="btn btn-danger btn-sm remove-btn"
+                  <Button
+                    variant="danger"
+                    size="sm"
                     onClick={() => {
                       const newFurniture = appliances.furniture.filter(f => f.id !== item.id);
                       updateFieldDirect('furniture', newFurniture);
                     }}
                   >
                     حذف
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}

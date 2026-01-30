@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from '../Input';
+import { Input } from '../ui';
 
 export const Step8Housing = ({ data, updateField }) => {
   const housing = data.housing || {};
