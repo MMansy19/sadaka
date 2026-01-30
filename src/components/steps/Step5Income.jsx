@@ -1,6 +1,6 @@
 import React from 'react';
-import { Input } from '../Input';
-import { formatCurrency } from '../../utils/calculations';
+import { Input } from '../ui';
+import { formatCurrency } from '../../utils';
 
 export const Step5Income = ({ data, updateNestedField }) => {
   const income = data.income || {};
