@@ -2,25 +2,55 @@ import React from 'react';
 import { formatCurrency } from '../../utils/calculations';
 
 export const Step11Review = ({ data }) => {
+  // Safely extract values with fallbacks
   const basicInfo = data.basicInfo || {};
   const income = data.income || {};
   const expenses = data.expenses || {};
   const evaluation = data.evaluation || {};
 
-  const netBalance = (income.totalIncome || 0) - (expenses.totalExpenses || 0);
+  // Ensure all values are primitive types
+  const fullName = String(basicInfo.fullName || '');
+  const nationalId = String(basicInfo.nationalId || '');
+  const address = String(basicInfo.address || '');
+  const familyMembersCount = Number(basicInfo.familyMembersCount) || 0;
+  const totalIncome = Number(income.totalIncome) || 0;
+  const totalExpenses = Number(expenses.totalExpenses) || 0;
+  const netBalance = totalIncome - totalExpenses;
+  const decision = String(evaluation.decision || '');
+  const decisionReason = String(evaluation.decisionReason || '');
+
+  const familyMembersCountVal = Array.isArray(data.familyMembers) ? data.familyMembers.length : 0;
+  const debtsCount = Array.isArray(data.debts?.debts) ? data.debts.debts.length : 0;
+  const appliancesCount = Array.isArray(data.appliances?.available) ? data.appliances.available.length : 0;
 
   const steps = [
     { title: 'البيانات الأساسية', key: 'basicInfo' },
-    { title: 'أفراد الأسرة', key: 'familyMembers', count: (data.familyMembers || []).length },
+    { title: 'أفراد الأسرة', key: 'familyMembers', count: familyMembersCountVal },
     { title: 'الزواج السابق', key: 'previousMarriage' },
-    { title: 'الديون', key: 'debts', count: (data.debts?.debts || []).length },
-    { title: 'الدخل', key: 'income', value: income.totalIncome },
-    { title: 'المصروفات', key: 'expenses', value: expenses.totalExpenses },
+    { title: 'الديون', key: 'debts', count: debtsCount },
+    { title: 'الدخل', key: 'income', value: totalIncome },
+    { title: 'المصروفات', key: 'expenses', value: totalExpenses },
     { title: 'العمل', key: 'work' },
     { title: 'السكن', key: 'housing' },
-    { title: 'الأجهزة والأثاث', key: 'appliances', count: (data.appliances?.available || []).length },
-    { title: 'التقييم', key: 'evaluation', decision: evaluation.decision }
+    { title: 'الأجهزة والأثاث', key: 'appliances', count: appliancesCount },
+    { title: 'التقييم', key: 'evaluation', decision: decision }
   ];
+
+  const getDecisionText = (dec) => {
+    if (dec === 'deserving') return '✓ تستحق';
+    if (dec === 'notDeserving') return '✗ لا تستحق';
+    if (dec === 'needsFurtherInvestigation') return '○ تحتاج مراجعة';
+    if (dec === 'partial') return '△ مساعدة جزئية';
+    return '○ قيد المراجعة';
+  };
+
+  const getDecisionBadge = (dec) => {
+    if (dec === 'deserving') return '✓ تستحق المساعدة';
+    if (dec === 'notDeserving') return '✗ لا تستحق';
+    if (dec === 'needsFurtherInvestigation') return '○ تحتاج مراجعة';
+    if (dec === 'partial') return '△ مساعدة جزئية';
+    return '';
+  };
 
   return (
     <div className="step-container">
@@ -32,19 +62,19 @@ export const Step11Review = ({ data }) => {
           <div className="summary-grid">
             <div className="summary-item">
               <span className="label">الاسم:</span>
-              <span className="value">{basicInfo.fullName || '-'}</span>
+              <span className="value">{fullName || '-'}</span>
             </div>
             <div className="summary-item">
               <span className="label">الرقم القومي:</span>
-              <span className="value">{basicInfo.nationalId || '-'}</span>
+              <span className="value">{nationalId || '-'}</span>
             </div>
             <div className="summary-item">
               <span className="label">العنوان:</span>
-              <span className="value">{basicInfo.address || '-'}</span>
+              <span className="value">{address || '-'}</span>
             </div>
             <div className="summary-item">
               <span className="label">عدد أفراد الأسرة:</span>
-              <span className="value">{basicInfo.familyMembersCount || 0}</span>
+              <span className="value">{familyMembersCount}</span>
             </div>
           </div>
         </div>
@@ -54,11 +84,11 @@ export const Step11Review = ({ data }) => {
           <div className="summary-grid financial">
             <div className="summary-item income">
               <span className="label">إجمالي الدخل:</span>
-              <span className="value">{formatCurrency(income.totalIncome || 0)}</span>
+              <span className="value">{formatCurrency(totalIncome)}</span>
             </div>
             <div className="summary-item expenses">
               <span className="label">إجمالي المصروفات:</span>
-              <span className="value">{formatCurrency(expenses.totalExpenses || 0)}</span>
+              <span className="value">{formatCurrency(totalExpenses)}</span>
             </div>
             <div className={`summary-item balance ${netBalance >= 0 ? 'positive' : 'negative'}`}>
               <span className="label">الفائض/العجز:</span>
@@ -74,7 +104,7 @@ export const Step11Review = ({ data }) => {
               <div key={step.key} className="checklist-item">
                 <span className="check-number">{index + 1}</span>
                 <span className="check-title">{step.title}</span>
-                {step.count !== undefined && (
+                {step.count !== undefined && step.count > 0 && (
                   <span className="check-info">({step.count})</span>
                 )}
                 {step.value !== undefined && (
@@ -82,7 +112,7 @@ export const Step11Review = ({ data }) => {
                 )}
                 {step.decision && (
                   <span className={`check-decision ${step.decision === 'deserving' ? 'deserving' : ''}`}>
-                    {step.decision === 'deserving' ? '✓ تستحق' : '○ قيد المراجعة'}
+                    {getDecisionText(step.decision)}
                   </span>
                 )}
               </div>
@@ -93,15 +123,12 @@ export const Step11Review = ({ data }) => {
         <div className="review-card">
           <h3>القرار النهائي</h3>
           <div className="final-decision">
-            {evaluation.decision ? (
+            {decision ? (
               <>
-                <div className={`decision-badge ${evaluation.decision}`}>
-                  {evaluation.decision === 'deserving' && '✓ تستحق المساعدة'}
-                  {evaluation.decision === 'notDeserving' && '✗ لا تستحق'}
-                  {evaluation.decision === 'needsFurtherInvestigation' && '○ تحتاج مراجعة'}
-                  {evaluation.decision === 'partial' && '△ مساعدة جزئية'}
+                <div className={`decision-badge ${decision}`}>
+                  {getDecisionBadge(decision)}
                 </div>
-                <p className="decision-reason">{evaluation.decisionReason || 'لا يوجد سبب مسجل'}</p>
+                <p className="decision-reason">{decisionReason || 'لا يوجد سبب مسجل'}</p>
               </>
             ) : (
               <p className="no-decision">لم يتم اتخاذ قرار بعد</p>

@@ -1,7 +1,11 @@
-import React from 'react';
-
-export const ProgressBar = ({ currentStep, totalSteps, steps }) => {
+export const ProgressBar = ({ currentStep, totalSteps, steps, goToStep }) => {
   const progress = ((currentStep + 1) / totalSteps) * 100;
+
+  const handleStepClick = (index) => {
+    if (goToStep) {
+      goToStep(index);
+    }
+  };
 
   return (
     <div className="progress-container">
@@ -17,7 +21,7 @@ export const ProgressBar = ({ currentStep, totalSteps, steps }) => {
           <div
             key={index}
             className={`step-dot ${index <= currentStep ? 'completed' : ''} ${index === currentStep ? 'current' : ''}`}
-            onClick={() => index <= currentStep}
+            onClick={() => handleStepClick(index)}
             title={step.title}
           >
             {index + 1}

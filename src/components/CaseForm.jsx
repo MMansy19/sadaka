@@ -36,6 +36,7 @@ export const CaseForm = () => {
     lastSaved,
     nextStep,
     prevStep,
+    goToStep,
     resetForm
   } = useCaseForm();
 
@@ -70,11 +71,17 @@ export const CaseForm = () => {
     // Clear all localStorage
     localStorage.removeItem('sadaka_cases_draft');
     localStorage.removeItem('sadaka_cases');
-    resetForm();
+    // Force a full page reload to reset everything
+    window.location.reload();
   };
 
   // Update a top-level field
   const updateField = (section, field, value) => {
+    // Ensure value is a primitive type
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      console.warn('Attempted to set object as field value:', field, value);
+      return;
+    }
     setFormData(prev => ({
       ...prev,
       [section]: {
@@ -87,6 +94,11 @@ export const CaseForm = () => {
 
   // Update a nested field (section.subsection.field)
   const updateNestedField = (section, subsection, field, value) => {
+    // Ensure value is a primitive type
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      console.warn('Attempted to set object as nested field value:', field, value);
+      return;
+    }
     setFormData(prev => ({
       ...prev,
       [section]: {
@@ -102,6 +114,11 @@ export const CaseForm = () => {
 
   // Update an item in an array
   const updateArrayItem = (section, itemId, field, value) => {
+    // Ensure value is a primitive type
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      console.warn('Attempted to set object as array item value:', field, value);
+      return;
+    }
     setFormData(prev => ({
       ...prev,
       [section]: (prev[section] || []).map(item =>
@@ -140,6 +157,7 @@ export const CaseForm = () => {
         currentStep={currentStep}
         totalSteps={steps.length}
         steps={steps}
+        goToStep={goToStep}
       />
 
       <div className="form-content">
@@ -189,7 +207,7 @@ export const CaseForm = () => {
       </div>
 
       <footer className="form-footer">
-        <p>جميع البيانات محفوظة تلقائياً | {formData.basicInfo?.fullName || 'حالة جديدة'}</p>
+        <p>جميع البيانات محفوظة تلقائياً | {String(formData.basicInfo?.fullName || 'حالة جديدة')}</p>
       </footer>
     </div>
   );

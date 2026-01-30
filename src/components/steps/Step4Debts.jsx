@@ -1,4 +1,3 @@
-import React from 'react';
 import { Input } from '../Input';
 
 export const Step4Debts = ({ data, updateField, addArrayItem, removeArrayItem }) => {

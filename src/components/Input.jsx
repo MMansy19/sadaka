@@ -1,11 +1,28 @@
 import React from 'react';
 
-export const Input = ({ label, name, value, onChange, type = "text", error, required, placeholder, options, ...props }) => {
+export const Input = React.forwardRef(({ label, name, value, onChange, type = "text", error, required, placeholder, options, ...props }, ref) => {
+  const handleChange = (e) => {
+    if (type === 'checkbox') {
+      onChange(e.target.checked);
+    } else if (type === 'number') {
+      onChange(e.target.value);
+    } else {
+      onChange(e.target.value);
+    }
+  };
+
   if (type === 'select') {
     return (
       <div className="form-group">
         {label && <label htmlFor={name}>{label} {required && <span className="required">*</span>}</label>}
-        <select name={name} value={value || ''} onChange={(e) => onChange(e.target.value)} required={required} className={error ? 'error' : ''}>
+        <select
+          ref={ref}
+          name={name}
+          value={value || ''}
+          onChange={handleChange}
+          required={required}
+          className={error ? 'error' : ''}
+        >
           <option value="">اختر...</option>
           {options?.map((opt, i) => (
             <option key={i} value={opt.value}>{opt.label}</option>
@@ -20,7 +37,16 @@ export const Input = ({ label, name, value, onChange, type = "text", error, requ
     return (
       <div className="form-group">
         {label && <label htmlFor={name}>{label} {required && <span className="required">*</span>}</label>}
-        <textarea name={name} value={value || ''} onChange={(e) => onChange(e.target.value)} required={required} placeholder={placeholder} rows={props.rows || 3} className={error ? 'error' : ''} />
+        <textarea
+          ref={ref}
+          name={name}
+          value={value || ''}
+          onChange={handleChange}
+          required={required}
+          placeholder={placeholder}
+          rows={props.rows || 3}
+          className={error ? 'error' : ''}
+        />
         {error && <span className="error-message">{error}</span>}
       </div>
     );
@@ -31,10 +57,11 @@ export const Input = ({ label, name, value, onChange, type = "text", error, requ
       <div className="form-group checkbox-group">
         <label>
           <input
+            ref={ref}
             type="checkbox"
             name={name}
             checked={!!value}
-            onChange={(e) => onChange(e.target.checked)}
+            onChange={handleChange}
           />
           {label}
         </label>
@@ -51,11 +78,12 @@ export const Input = ({ label, name, value, onChange, type = "text", error, requ
           {options?.map((opt, i) => (
             <label key={i} className="radio-option">
               <input
+                ref={ref}
                 type="radio"
                 name={name}
                 value={opt.value}
                 checked={value === opt.value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={handleChange}
               />
               {opt.label}
             </label>
@@ -71,9 +99,10 @@ export const Input = ({ label, name, value, onChange, type = "text", error, requ
       <div className="form-group">
         {label && <label htmlFor={name}>{label} {required && <span className="required">*</span>}</label>}
         <input
+          ref={ref}
           name={name}
-          value={value || 0}
-          onChange={(e) => onChange(e.target.value)}
+          value={value === undefined || value === null ? '' : value}
+          onChange={handleChange}
           type="number"
           placeholder={placeholder}
           required={required}
@@ -90,9 +119,10 @@ export const Input = ({ label, name, value, onChange, type = "text", error, requ
     <div className="form-group">
       {label && <label htmlFor={name}>{label} {required && <span className="required">*</span>}</label>}
       <input
+        ref={ref}
         name={name}
         value={value || ''}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={handleChange}
         type={type}
         placeholder={placeholder}
         required={required}
@@ -102,4 +132,6 @@ export const Input = ({ label, name, value, onChange, type = "text", error, requ
       {error && <span className="error-message">{error}</span>}
     </div>
   );
-};
+});
+
+Input.displayName = 'Input';

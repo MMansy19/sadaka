@@ -129,8 +129,16 @@ body {
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
 }
 
-.step-dot:hover.completed {
-  transform: scale(1.1);
+.step-dot:hover {
+  transform: scale(1.15);
+}
+
+.step-dot.completed:hover {
+  background: #15803d;
+}
+
+.step-dot.current:hover {
+  background: #1d4ed8;
 }
 
 /* Form Content */

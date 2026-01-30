@@ -4,6 +4,52 @@ import { calculateTotalIncome, calculateTotalExpenses } from '../utils/calculati
 
 const STORAGE_KEY = 'sadaka_cases_draft';
 
+// Function to check if a value is a valid primitive (not an object or event)
+const isValidValue = (value) => {
+  if (value === null || value === undefined) return true;
+  if (typeof value === 'string') return true;
+  if (typeof value === 'number') return true;
+  if (typeof value === 'boolean') return true;
+  return false;
+};
+
+// Function to sanitize data and remove any invalid objects (like events)
+const sanitizeData = (data) => {
+  if (!data || typeof data !== 'object') return getEmptyCase();
+
+  const sanitized = {};
+
+  for (const [key, value] of Object.entries(data)) {
+    // Skip internal keys
+    if (key.startsWith('_')) continue;
+
+    if (value === null || value === undefined) {
+      sanitized[key] = value;
+    } else if (Array.isArray(value)) {
+      sanitized[key] = value.map(item => {
+        if (item && typeof item === 'object') {
+          // Filter out any properties that are objects (like events)
+          const cleanItem = {};
+          for (const [prop, val] of Object.entries(item)) {
+            if (isValidValue(val)) {
+              cleanItem[prop] = val;
+            }
+          }
+          return cleanItem;
+        }
+        return item;
+      });
+    } else if (typeof value === 'object') {
+      // Recursively sanitize nested objects
+      sanitized[key] = sanitizeData(value);
+    } else {
+      sanitized[key] = value;
+    }
+  }
+
+  return sanitized;
+};
+
 export const useCaseForm = (caseId = null) => {
   const [formData, setFormData] = useState(() => getEmptyCase());
   const [currentStep, setCurrentStep] = useState(0);
@@ -17,10 +63,14 @@ export const useCaseForm = (caseId = null) => {
     if (savedDraft) {
       try {
         const parsed = JSON.parse(savedDraft);
-        setFormData(parsed);
-        setCurrentStep(parsed._currentStep || 0);
+        // Sanitize the loaded data to remove any invalid objects
+        const sanitized = sanitizeData(parsed);
+        setFormData(sanitized);
+        setCurrentStep(sanitized._currentStep || 0);
       } catch (e) {
         console.error('Failed to load draft:', e);
+        // Clear corrupted data
+        localStorage.removeItem(STORAGE_KEY);
       }
     }
   }, []);
